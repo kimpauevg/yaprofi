@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\PromoController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -13,6 +14,28 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
+Route::group(['prefix' => 'promo'], function () {
+    Route::get('/', [PromoController::class, 'index']);
+
+    Route::post('/', [PromoController::class, 'store']);
+
+    Route::group(['prefix' => '{id}'], function () {
+        Route::group(['prefix' => 'participant'], function () {
+            Route::post('/', [PromoController::class, 'storeParticipant']);
+            Route::delete('/{participant_id}', [PromoController::class, 'deleteParticipant']);
+        });
+
+        Route::group(['prefix' => 'prize'], function () {
+            Route::post('/', [PromoController::class, 'storePrize']);
+            Route::delete('/{participant_id}', [PromoController::class, 'deletePrize']);
+        });
+
+        Route::post('/raffle', [PromoController::class, 'raffle']);
+
+        Route::put('/', [PromoController::class, 'update']);
+
+        Route::delete('/', [PromoController::class, 'delete']);
+
+        Route::get('/', [PromoController::class, 'show']);
+    });
 });
